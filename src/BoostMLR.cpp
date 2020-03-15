@@ -1523,10 +1523,10 @@ List BoostMLR_C(NumericMatrix Org_x,
                     {
                       if(Lambda_L_Temp < 0){
                         Lambda_L_Temp = Lambda_Ridge_Vec[k];
-                      }else
-                      {
-                        Lambda_L_Temp = Lambda_L_Temp;  
-                      }
+                      } //else
+                        //{
+                        //  Lambda_L_Temp = Lambda_L_Temp;  
+                        //}
                     }
                     Beta_Hat_Noise_Temp[l_m]         = (Trace_Bxt_gm/(Trace_Bxt + Lambda_L_Temp))/Bx_Scale_K[d];
                   }else
@@ -2370,10 +2370,10 @@ List update_BoostMLR_C(NumericMatrix Org_x,
                       {
                         if(Lambda_L_Temp < 0){
                           Lambda_L_Temp = Lambda_Ridge_Vec[k];
-                        }else
-                        {
-                          Lambda_L_Temp = Lambda_L_Temp;  
-                        }
+                        } //else
+                          // {
+                          // Lambda_L_Temp = Lambda_L_Temp;  
+                          // }
                       }
                       Beta_Hat_Noise_Temp[l_m]         = (Trace_Bxt_gm/(Trace_Bxt + Lambda_L_Temp))/Bx_Scale_K[d];
                     }else

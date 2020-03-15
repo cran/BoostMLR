@@ -1,4 +1,4 @@
-6da1d2f02a1ac0964280f2c06839c5e6 *DESCRIPTION
+7e71571d883927189cbc2575753154db *DESCRIPTION
 2561a5922845d338abb0bec5c69206f6 *NAMESPACE
 88eb06ec4bba9efd99aa4238b91cdaed *R/BoostMLR.R
 c2fb91ff3e81bf17e78ebb97ba34ca01 *R/BoostMLR.news.R
@@ -17,7 +17,7 @@ c65a88c06667cdd080eb1a0c6cbbe60d *R/zzz.R
 84f2bd757603354cb78968c63c1b0c76 *data/datalist
 f3191a6f6fd2d8c1bb773014906445d7 *inst/CITATION
 f56975b7463f016b2f9bdf48aadbbd37 *inst/COPYRIGHTS
-314c9f7c31713231cafdfbc1039ecd29 *inst/NEWS
+0b3a1b85c466d8a0a2988d6beb178d13 *inst/NEWS
 58996c7ff07d31e6f5c6343b3ffeed1d *man/BoostMLR-package.Rd
 5e34263d2625858326db90d144b7d369 *man/BoostMLR.Rd
 0196d632546ede0e0580b23ab5aa3e37 *man/BoostMLR.news.Rd
@@ -29,5 +29,5 @@ c16581a8c808c73c4ef2953d05129f28 *man/predictBoostMLR.Rd
 b368e63a68a0cc4d26bce1eb50c7c07a *man/simLong.Rd
 7fb2eefce04aa30ac064897760468548 *man/updateBoostMLR.Rd
 c6a329bba5705665bb1502e67b9d6263 *man/vimp.BoostMLR.Rd
-50dcf798b2a14c4765b733bcadb3bc9d *src/BoostMLR.cpp
+0041ba89017f7e4543df354ad0f23cff *src/BoostMLR.cpp
 493d03a30f195850f2193ef3f45c0765 *src/RcppExports.cpp
