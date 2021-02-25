@@ -260,25 +260,56 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// set_seed
+void set_seed(unsigned long int seed);
+RcppExport SEXP _BoostMLR_set_seed(SEXP seedSEXP) {
+BEGIN_RCPP
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< unsigned long int >::type seed(seedSEXP);
+    set_seed(seed);
+    return R_NilValue;
+END_RCPP
+}
 // randomShuffle
-Rcpp::NumericVector randomShuffle(Rcpp::NumericVector a);
-RcppExport SEXP _BoostMLR_randomShuffle(SEXP aSEXP) {
+NumericVector randomShuffle(NumericVector x, int size, bool setting_seed, unsigned long int seed_value, bool replace, sugar::probs_t p);
+RcppExport SEXP _BoostMLR_randomShuffle(SEXP xSEXP, SEXP sizeSEXP, SEXP setting_seedSEXP, SEXP seed_valueSEXP, SEXP replaceSEXP, SEXP pSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< Rcpp::NumericVector >::type a(aSEXP);
-    rcpp_result_gen = Rcpp::wrap(randomShuffle(a));
+    Rcpp::traits::input_parameter< NumericVector >::type x(xSEXP);
+    Rcpp::traits::input_parameter< int >::type size(sizeSEXP);
+    Rcpp::traits::input_parameter< bool >::type setting_seed(setting_seedSEXP);
+    Rcpp::traits::input_parameter< unsigned long int >::type seed_value(seed_valueSEXP);
+    Rcpp::traits::input_parameter< bool >::type replace(replaceSEXP);
+    Rcpp::traits::input_parameter< sugar::probs_t >::type p(pSEXP);
+    rcpp_result_gen = Rcpp::wrap(randomShuffle(x, size, setting_seed, seed_value, replace, p));
     return rcpp_result_gen;
 END_RCPP
 }
 // int_randomShuffle
-Rcpp::IntegerVector int_randomShuffle(Rcpp::IntegerVector a);
-RcppExport SEXP _BoostMLR_int_randomShuffle(SEXP aSEXP) {
+IntegerVector int_randomShuffle(IntegerVector x, int size, bool setting_seed, unsigned long int seed_value, bool replace, sugar::probs_t p);
+RcppExport SEXP _BoostMLR_int_randomShuffle(SEXP xSEXP, SEXP sizeSEXP, SEXP setting_seedSEXP, SEXP seed_valueSEXP, SEXP replaceSEXP, SEXP pSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< Rcpp::IntegerVector >::type a(aSEXP);
-    rcpp_result_gen = Rcpp::wrap(int_randomShuffle(a));
+    Rcpp::traits::input_parameter< IntegerVector >::type x(xSEXP);
+    Rcpp::traits::input_parameter< int >::type size(sizeSEXP);
+    Rcpp::traits::input_parameter< bool >::type setting_seed(setting_seedSEXP);
+    Rcpp::traits::input_parameter< unsigned long int >::type seed_value(seed_valueSEXP);
+    Rcpp::traits::input_parameter< bool >::type replace(replaceSEXP);
+    Rcpp::traits::input_parameter< sugar::probs_t >::type p(pSEXP);
+    rcpp_result_gen = Rcpp::wrap(int_randomShuffle(x, size, setting_seed, seed_value, replace, p));
+    return rcpp_result_gen;
+END_RCPP
+}
+// Reverse_Ordering
+IntegerVector Reverse_Ordering(IntegerVector a);
+RcppExport SEXP _BoostMLR_Reverse_Ordering(SEXP aSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< IntegerVector >::type a(aSEXP);
+    rcpp_result_gen = Rcpp::wrap(Reverse_Ordering(a));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -334,6 +365,28 @@ BEGIN_RCPP
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< Rcpp::NumericVector >::type x(xSEXP);
     rcpp_result_gen = Rcpp::wrap(stl_sort_reverse_NA(x));
+    return rcpp_result_gen;
+END_RCPP
+}
+// unique_C
+NumericVector unique_C(NumericVector x);
+RcppExport SEXP _BoostMLR_unique_C(SEXP xSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type x(xSEXP);
+    rcpp_result_gen = Rcpp::wrap(unique_C(x));
+    return rcpp_result_gen;
+END_RCPP
+}
+// unique_C_NA
+NumericVector unique_C_NA(NumericVector x);
+RcppExport SEXP _BoostMLR_unique_C_NA(SEXP xSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type x(xSEXP);
+    rcpp_result_gen = Rcpp::wrap(unique_C_NA(x));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -452,8 +505,8 @@ BEGIN_RCPP
 END_RCPP
 }
 // DataProcessing_C
-List DataProcessing_C(NumericMatrix Org_x, NumericMatrix Org_y, NumericVector id, NumericVector tm, bool x_miss);
-RcppExport SEXP _BoostMLR_DataProcessing_C(SEXP Org_xSEXP, SEXP Org_ySEXP, SEXP idSEXP, SEXP tmSEXP, SEXP x_missSEXP) {
+List DataProcessing_C(NumericMatrix Org_x, NumericMatrix Org_y, NumericVector id, NumericVector tm, NumericVector unq_id, bool x_miss, bool Trace);
+RcppExport SEXP _BoostMLR_DataProcessing_C(SEXP Org_xSEXP, SEXP Org_ySEXP, SEXP idSEXP, SEXP tmSEXP, SEXP unq_idSEXP, SEXP x_missSEXP, SEXP TraceSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -461,14 +514,16 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< NumericMatrix >::type Org_y(Org_ySEXP);
     Rcpp::traits::input_parameter< NumericVector >::type id(idSEXP);
     Rcpp::traits::input_parameter< NumericVector >::type tm(tmSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type unq_id(unq_idSEXP);
     Rcpp::traits::input_parameter< bool >::type x_miss(x_missSEXP);
-    rcpp_result_gen = Rcpp::wrap(DataProcessing_C(Org_x, Org_y, id, tm, x_miss));
+    Rcpp::traits::input_parameter< bool >::type Trace(TraceSEXP);
+    rcpp_result_gen = Rcpp::wrap(DataProcessing_C(Org_x, Org_y, id, tm, unq_id, x_miss, Trace));
     return rcpp_result_gen;
 END_RCPP
 }
 // BoostMLR_C
-List BoostMLR_C(NumericMatrix Org_x, NumericMatrix Org_y, NumericVector id, NumericVector tm, NumericMatrix x, NumericMatrix y, NumericVector x_Mean, NumericVector x_Std_Error, NumericVector y_Mean, NumericVector y_Std_Error, int n, int K, int L, int H, IntegerVector Dk, IntegerVector ni, int N, NumericVector unq_id, NumericVector unq_tm, List unq_x, List id_index, NumericMatrix Bt, List Bx, List Bx_Scale, NumericMatrix Time_Add_New, LogicalVector Time_Unmatch, double nu, int M, bool Mod_Grad, LogicalVector UseRaw, NumericVector Lambda_Ridge_Vec, bool Ridge_Penalty, bool Shrink, double lower_perc, double upper_perc, double Lambda_Scale, int NLambda, bool VarFlag, NumericVector rho, NumericVector phi, bool Verbose);
-RcppExport SEXP _BoostMLR_BoostMLR_C(SEXP Org_xSEXP, SEXP Org_ySEXP, SEXP idSEXP, SEXP tmSEXP, SEXP xSEXP, SEXP ySEXP, SEXP x_MeanSEXP, SEXP x_Std_ErrorSEXP, SEXP y_MeanSEXP, SEXP y_Std_ErrorSEXP, SEXP nSEXP, SEXP KSEXP, SEXP LSEXP, SEXP HSEXP, SEXP DkSEXP, SEXP niSEXP, SEXP NSEXP, SEXP unq_idSEXP, SEXP unq_tmSEXP, SEXP unq_xSEXP, SEXP id_indexSEXP, SEXP BtSEXP, SEXP BxSEXP, SEXP Bx_ScaleSEXP, SEXP Time_Add_NewSEXP, SEXP Time_UnmatchSEXP, SEXP nuSEXP, SEXP MSEXP, SEXP Mod_GradSEXP, SEXP UseRawSEXP, SEXP Lambda_Ridge_VecSEXP, SEXP Ridge_PenaltySEXP, SEXP ShrinkSEXP, SEXP lower_percSEXP, SEXP upper_percSEXP, SEXP Lambda_ScaleSEXP, SEXP NLambdaSEXP, SEXP VarFlagSEXP, SEXP rhoSEXP, SEXP phiSEXP, SEXP VerboseSEXP) {
+List BoostMLR_C(NumericMatrix Org_x, NumericMatrix Org_y, NumericVector id, NumericVector tm, NumericMatrix x, NumericMatrix y, NumericVector x_Mean, NumericVector x_Std_Error, NumericVector y_Mean, NumericVector y_Std_Error, int n, int K, int L, int H, IntegerVector Dk, IntegerVector ni, int N, NumericVector unq_id, NumericVector unq_tm, List unq_x, List id_index, NumericMatrix Bt, List Bx, List Bx_Scale, NumericMatrix Time_Add_New, LogicalVector Time_Unmatch, double nu, int M, bool Mod_Grad, LogicalVector UseRaw, NumericVector Lambda_Ridge_Vec, bool Ridge_Penalty, bool Shrink, double lower_perc, double upper_perc, double Lambda_Scale, int NLambda, bool VarFlag, NumericVector rho, NumericVector phi, bool setting_seed, unsigned long int seed_value, bool Verbose, bool Trace);
+RcppExport SEXP _BoostMLR_BoostMLR_C(SEXP Org_xSEXP, SEXP Org_ySEXP, SEXP idSEXP, SEXP tmSEXP, SEXP xSEXP, SEXP ySEXP, SEXP x_MeanSEXP, SEXP x_Std_ErrorSEXP, SEXP y_MeanSEXP, SEXP y_Std_ErrorSEXP, SEXP nSEXP, SEXP KSEXP, SEXP LSEXP, SEXP HSEXP, SEXP DkSEXP, SEXP niSEXP, SEXP NSEXP, SEXP unq_idSEXP, SEXP unq_tmSEXP, SEXP unq_xSEXP, SEXP id_indexSEXP, SEXP BtSEXP, SEXP BxSEXP, SEXP Bx_ScaleSEXP, SEXP Time_Add_NewSEXP, SEXP Time_UnmatchSEXP, SEXP nuSEXP, SEXP MSEXP, SEXP Mod_GradSEXP, SEXP UseRawSEXP, SEXP Lambda_Ridge_VecSEXP, SEXP Ridge_PenaltySEXP, SEXP ShrinkSEXP, SEXP lower_percSEXP, SEXP upper_percSEXP, SEXP Lambda_ScaleSEXP, SEXP NLambdaSEXP, SEXP VarFlagSEXP, SEXP rhoSEXP, SEXP phiSEXP, SEXP setting_seedSEXP, SEXP seed_valueSEXP, SEXP VerboseSEXP, SEXP TraceSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -512,14 +567,17 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< bool >::type VarFlag(VarFlagSEXP);
     Rcpp::traits::input_parameter< NumericVector >::type rho(rhoSEXP);
     Rcpp::traits::input_parameter< NumericVector >::type phi(phiSEXP);
+    Rcpp::traits::input_parameter< bool >::type setting_seed(setting_seedSEXP);
+    Rcpp::traits::input_parameter< unsigned long int >::type seed_value(seed_valueSEXP);
     Rcpp::traits::input_parameter< bool >::type Verbose(VerboseSEXP);
-    rcpp_result_gen = Rcpp::wrap(BoostMLR_C(Org_x, Org_y, id, tm, x, y, x_Mean, x_Std_Error, y_Mean, y_Std_Error, n, K, L, H, Dk, ni, N, unq_id, unq_tm, unq_x, id_index, Bt, Bx, Bx_Scale, Time_Add_New, Time_Unmatch, nu, M, Mod_Grad, UseRaw, Lambda_Ridge_Vec, Ridge_Penalty, Shrink, lower_perc, upper_perc, Lambda_Scale, NLambda, VarFlag, rho, phi, Verbose));
+    Rcpp::traits::input_parameter< bool >::type Trace(TraceSEXP);
+    rcpp_result_gen = Rcpp::wrap(BoostMLR_C(Org_x, Org_y, id, tm, x, y, x_Mean, x_Std_Error, y_Mean, y_Std_Error, n, K, L, H, Dk, ni, N, unq_id, unq_tm, unq_x, id_index, Bt, Bx, Bx_Scale, Time_Add_New, Time_Unmatch, nu, M, Mod_Grad, UseRaw, Lambda_Ridge_Vec, Ridge_Penalty, Shrink, lower_perc, upper_perc, Lambda_Scale, NLambda, VarFlag, rho, phi, setting_seed, seed_value, Verbose, Trace));
     return rcpp_result_gen;
 END_RCPP
 }
 // update_BoostMLR_C
-List update_BoostMLR_C(NumericMatrix Org_x, NumericMatrix Org_y, NumericVector id, NumericVector tm, NumericMatrix x, NumericMatrix y, NumericVector x_Mean, NumericVector x_Std_Error, NumericVector y_Mean, NumericVector y_Std_Error, int n, int K, int L, int H, IntegerVector Dk, IntegerVector ni, int N, NumericVector unq_id, NumericVector unq_tm, List unq_x, List id_index, List tm_index, List x_index, NumericMatrix Bt, List Bx, List Bt_H, List Bx_K, List Bxt, List Bx_Scale, double nu, int M, int M_New, LogicalVector UseRaw, bool Shrink, bool Ridge_Penalty, NumericVector Lambda_Ridge_Vec, double Lambda_Scale, int NLambda, double lower_perc, double upper_perc, List Lambda_List, NumericMatrix mu, List mu_List, NumericMatrix mu_zero, NumericVector Vec_zero, NumericMatrix Error_Rate, IntegerMatrix Variable_Select, IntegerMatrix Response_Select, List Beta_Hat_List, List Sum_Beta_Hat_List, List Beta, List Beta_Hat_List_Iter, List lower_Beta_Hat_Noise, List upper_Beta_Hat_Noise, List List_Trace_Bxt_gm, bool Mod_Grad, bool VarFlag, NumericVector phi, NumericVector rho, NumericMatrix Phi, NumericMatrix Rho, bool Verbose);
-RcppExport SEXP _BoostMLR_update_BoostMLR_C(SEXP Org_xSEXP, SEXP Org_ySEXP, SEXP idSEXP, SEXP tmSEXP, SEXP xSEXP, SEXP ySEXP, SEXP x_MeanSEXP, SEXP x_Std_ErrorSEXP, SEXP y_MeanSEXP, SEXP y_Std_ErrorSEXP, SEXP nSEXP, SEXP KSEXP, SEXP LSEXP, SEXP HSEXP, SEXP DkSEXP, SEXP niSEXP, SEXP NSEXP, SEXP unq_idSEXP, SEXP unq_tmSEXP, SEXP unq_xSEXP, SEXP id_indexSEXP, SEXP tm_indexSEXP, SEXP x_indexSEXP, SEXP BtSEXP, SEXP BxSEXP, SEXP Bt_HSEXP, SEXP Bx_KSEXP, SEXP BxtSEXP, SEXP Bx_ScaleSEXP, SEXP nuSEXP, SEXP MSEXP, SEXP M_NewSEXP, SEXP UseRawSEXP, SEXP ShrinkSEXP, SEXP Ridge_PenaltySEXP, SEXP Lambda_Ridge_VecSEXP, SEXP Lambda_ScaleSEXP, SEXP NLambdaSEXP, SEXP lower_percSEXP, SEXP upper_percSEXP, SEXP Lambda_ListSEXP, SEXP muSEXP, SEXP mu_ListSEXP, SEXP mu_zeroSEXP, SEXP Vec_zeroSEXP, SEXP Error_RateSEXP, SEXP Variable_SelectSEXP, SEXP Response_SelectSEXP, SEXP Beta_Hat_ListSEXP, SEXP Sum_Beta_Hat_ListSEXP, SEXP BetaSEXP, SEXP Beta_Hat_List_IterSEXP, SEXP lower_Beta_Hat_NoiseSEXP, SEXP upper_Beta_Hat_NoiseSEXP, SEXP List_Trace_Bxt_gmSEXP, SEXP Mod_GradSEXP, SEXP VarFlagSEXP, SEXP phiSEXP, SEXP rhoSEXP, SEXP PhiSEXP, SEXP RhoSEXP, SEXP VerboseSEXP) {
+List update_BoostMLR_C(NumericMatrix Org_x, NumericMatrix Org_y, NumericVector id, NumericVector tm, NumericMatrix x, NumericMatrix y, NumericVector x_Mean, NumericVector x_Std_Error, NumericVector y_Mean, NumericVector y_Std_Error, int n, int K, int L, int H, IntegerVector Dk, IntegerVector ni, int N, NumericVector unq_id, NumericVector unq_tm, List unq_x, List id_index, List tm_index, List x_index, NumericMatrix Bt, List Bx, List Bt_H, List Bx_K, List Bxt, List Bx_Scale, double nu, int M, int M_New, LogicalVector UseRaw, bool Shrink, bool Ridge_Penalty, NumericVector Lambda_Ridge_Vec, double Lambda_Scale, int NLambda, double lower_perc, double upper_perc, List Lambda_List, NumericMatrix mu, List mu_List, NumericMatrix mu_zero, NumericVector Vec_zero, NumericMatrix Error_Rate, IntegerMatrix Variable_Select, IntegerMatrix Response_Select, List Beta_Hat_List, List Sum_Beta_Hat_List, List Beta, List Beta_Hat_List_Iter, List lower_Beta_Hat_Noise, List upper_Beta_Hat_Noise, List List_Trace_Bxt_gm, bool Mod_Grad, bool VarFlag, NumericVector phi, NumericVector rho, NumericMatrix Phi, NumericMatrix Rho, bool setting_seed, unsigned long int seed_value, bool Verbose);
+RcppExport SEXP _BoostMLR_update_BoostMLR_C(SEXP Org_xSEXP, SEXP Org_ySEXP, SEXP idSEXP, SEXP tmSEXP, SEXP xSEXP, SEXP ySEXP, SEXP x_MeanSEXP, SEXP x_Std_ErrorSEXP, SEXP y_MeanSEXP, SEXP y_Std_ErrorSEXP, SEXP nSEXP, SEXP KSEXP, SEXP LSEXP, SEXP HSEXP, SEXP DkSEXP, SEXP niSEXP, SEXP NSEXP, SEXP unq_idSEXP, SEXP unq_tmSEXP, SEXP unq_xSEXP, SEXP id_indexSEXP, SEXP tm_indexSEXP, SEXP x_indexSEXP, SEXP BtSEXP, SEXP BxSEXP, SEXP Bt_HSEXP, SEXP Bx_KSEXP, SEXP BxtSEXP, SEXP Bx_ScaleSEXP, SEXP nuSEXP, SEXP MSEXP, SEXP M_NewSEXP, SEXP UseRawSEXP, SEXP ShrinkSEXP, SEXP Ridge_PenaltySEXP, SEXP Lambda_Ridge_VecSEXP, SEXP Lambda_ScaleSEXP, SEXP NLambdaSEXP, SEXP lower_percSEXP, SEXP upper_percSEXP, SEXP Lambda_ListSEXP, SEXP muSEXP, SEXP mu_ListSEXP, SEXP mu_zeroSEXP, SEXP Vec_zeroSEXP, SEXP Error_RateSEXP, SEXP Variable_SelectSEXP, SEXP Response_SelectSEXP, SEXP Beta_Hat_ListSEXP, SEXP Sum_Beta_Hat_ListSEXP, SEXP BetaSEXP, SEXP Beta_Hat_List_IterSEXP, SEXP lower_Beta_Hat_NoiseSEXP, SEXP upper_Beta_Hat_NoiseSEXP, SEXP List_Trace_Bxt_gmSEXP, SEXP Mod_GradSEXP, SEXP VarFlagSEXP, SEXP phiSEXP, SEXP rhoSEXP, SEXP PhiSEXP, SEXP RhoSEXP, SEXP setting_seedSEXP, SEXP seed_valueSEXP, SEXP VerboseSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -584,14 +642,16 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< NumericVector >::type rho(rhoSEXP);
     Rcpp::traits::input_parameter< NumericMatrix >::type Phi(PhiSEXP);
     Rcpp::traits::input_parameter< NumericMatrix >::type Rho(RhoSEXP);
+    Rcpp::traits::input_parameter< bool >::type setting_seed(setting_seedSEXP);
+    Rcpp::traits::input_parameter< unsigned long int >::type seed_value(seed_valueSEXP);
     Rcpp::traits::input_parameter< bool >::type Verbose(VerboseSEXP);
-    rcpp_result_gen = Rcpp::wrap(update_BoostMLR_C(Org_x, Org_y, id, tm, x, y, x_Mean, x_Std_Error, y_Mean, y_Std_Error, n, K, L, H, Dk, ni, N, unq_id, unq_tm, unq_x, id_index, tm_index, x_index, Bt, Bx, Bt_H, Bx_K, Bxt, Bx_Scale, nu, M, M_New, UseRaw, Shrink, Ridge_Penalty, Lambda_Ridge_Vec, Lambda_Scale, NLambda, lower_perc, upper_perc, Lambda_List, mu, mu_List, mu_zero, Vec_zero, Error_Rate, Variable_Select, Response_Select, Beta_Hat_List, Sum_Beta_Hat_List, Beta, Beta_Hat_List_Iter, lower_Beta_Hat_Noise, upper_Beta_Hat_Noise, List_Trace_Bxt_gm, Mod_Grad, VarFlag, phi, rho, Phi, Rho, Verbose));
+    rcpp_result_gen = Rcpp::wrap(update_BoostMLR_C(Org_x, Org_y, id, tm, x, y, x_Mean, x_Std_Error, y_Mean, y_Std_Error, n, K, L, H, Dk, ni, N, unq_id, unq_tm, unq_x, id_index, tm_index, x_index, Bt, Bx, Bt_H, Bx_K, Bxt, Bx_Scale, nu, M, M_New, UseRaw, Shrink, Ridge_Penalty, Lambda_Ridge_Vec, Lambda_Scale, NLambda, lower_perc, upper_perc, Lambda_List, mu, mu_List, mu_zero, Vec_zero, Error_Rate, Variable_Select, Response_Select, Beta_Hat_List, Sum_Beta_Hat_List, Beta, Beta_Hat_List_Iter, lower_Beta_Hat_Noise, upper_Beta_Hat_Noise, List_Trace_Bxt_gm, Mod_Grad, VarFlag, phi, rho, Phi, Rho, setting_seed, seed_value, Verbose));
     return rcpp_result_gen;
 END_RCPP
 }
 // predict_BoostMLR_C
-List predict_BoostMLR_C(NumericMatrix Org_x, NumericVector tm, NumericVector id, NumericMatrix Org_y, NumericVector x_Mean, NumericVector x_Std_Error, NumericVector y_Mean, NumericVector y_Std_Error, int K, int L, int H, IntegerVector Dk, NumericVector unq_tm, List unq_x, NumericMatrix Bt, List Bx, LogicalVector UseRaw, NumericMatrix Time_Add_New, LogicalVector Time_Unmatch, List Beta, List Beta_Hat_List, bool testFlag, int M, double nu, bool Time_Varying, bool vimpFlag, bool vimpFlag_Coef, double eps);
-RcppExport SEXP _BoostMLR_predict_BoostMLR_C(SEXP Org_xSEXP, SEXP tmSEXP, SEXP idSEXP, SEXP Org_ySEXP, SEXP x_MeanSEXP, SEXP x_Std_ErrorSEXP, SEXP y_MeanSEXP, SEXP y_Std_ErrorSEXP, SEXP KSEXP, SEXP LSEXP, SEXP HSEXP, SEXP DkSEXP, SEXP unq_tmSEXP, SEXP unq_xSEXP, SEXP BtSEXP, SEXP BxSEXP, SEXP UseRawSEXP, SEXP Time_Add_NewSEXP, SEXP Time_UnmatchSEXP, SEXP BetaSEXP, SEXP Beta_Hat_ListSEXP, SEXP testFlagSEXP, SEXP MSEXP, SEXP nuSEXP, SEXP Time_VaryingSEXP, SEXP vimpFlagSEXP, SEXP vimpFlag_CoefSEXP, SEXP epsSEXP) {
+List predict_BoostMLR_C(NumericMatrix Org_x, NumericVector tm, NumericVector id, NumericMatrix Org_y, NumericVector x_Mean, NumericVector x_Std_Error, NumericVector y_Mean, NumericVector y_Std_Error, int K, int L, int H, IntegerVector Dk, NumericVector unq_id, NumericVector unq_tm, List unq_x, NumericMatrix Bt, List Bx, LogicalVector UseRaw, NumericMatrix Time_Add_New, LogicalVector Time_Unmatch, List Beta, List Beta_Hat_List, bool testFlag, int M, double nu, bool Time_Varying, bool vimpFlag, bool vimpFlag_Coef, double eps, bool setting_seed, unsigned long int seed_value);
+RcppExport SEXP _BoostMLR_predict_BoostMLR_C(SEXP Org_xSEXP, SEXP tmSEXP, SEXP idSEXP, SEXP Org_ySEXP, SEXP x_MeanSEXP, SEXP x_Std_ErrorSEXP, SEXP y_MeanSEXP, SEXP y_Std_ErrorSEXP, SEXP KSEXP, SEXP LSEXP, SEXP HSEXP, SEXP DkSEXP, SEXP unq_idSEXP, SEXP unq_tmSEXP, SEXP unq_xSEXP, SEXP BtSEXP, SEXP BxSEXP, SEXP UseRawSEXP, SEXP Time_Add_NewSEXP, SEXP Time_UnmatchSEXP, SEXP BetaSEXP, SEXP Beta_Hat_ListSEXP, SEXP testFlagSEXP, SEXP MSEXP, SEXP nuSEXP, SEXP Time_VaryingSEXP, SEXP vimpFlagSEXP, SEXP vimpFlag_CoefSEXP, SEXP epsSEXP, SEXP setting_seedSEXP, SEXP seed_valueSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -607,6 +667,7 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< int >::type L(LSEXP);
     Rcpp::traits::input_parameter< int >::type H(HSEXP);
     Rcpp::traits::input_parameter< IntegerVector >::type Dk(DkSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type unq_id(unq_idSEXP);
     Rcpp::traits::input_parameter< NumericVector >::type unq_tm(unq_tmSEXP);
     Rcpp::traits::input_parameter< List >::type unq_x(unq_xSEXP);
     Rcpp::traits::input_parameter< NumericMatrix >::type Bt(BtSEXP);
@@ -623,13 +684,15 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< bool >::type vimpFlag(vimpFlagSEXP);
     Rcpp::traits::input_parameter< bool >::type vimpFlag_Coef(vimpFlag_CoefSEXP);
     Rcpp::traits::input_parameter< double >::type eps(epsSEXP);
-    rcpp_result_gen = Rcpp::wrap(predict_BoostMLR_C(Org_x, tm, id, Org_y, x_Mean, x_Std_Error, y_Mean, y_Std_Error, K, L, H, Dk, unq_tm, unq_x, Bt, Bx, UseRaw, Time_Add_New, Time_Unmatch, Beta, Beta_Hat_List, testFlag, M, nu, Time_Varying, vimpFlag, vimpFlag_Coef, eps));
+    Rcpp::traits::input_parameter< bool >::type setting_seed(setting_seedSEXP);
+    Rcpp::traits::input_parameter< unsigned long int >::type seed_value(seed_valueSEXP);
+    rcpp_result_gen = Rcpp::wrap(predict_BoostMLR_C(Org_x, tm, id, Org_y, x_Mean, x_Std_Error, y_Mean, y_Std_Error, K, L, H, Dk, unq_id, unq_tm, unq_x, Bt, Bx, UseRaw, Time_Add_New, Time_Unmatch, Beta, Beta_Hat_List, testFlag, M, nu, Time_Varying, vimpFlag, vimpFlag_Coef, eps, setting_seed, seed_value));
     return rcpp_result_gen;
 END_RCPP
 }
 // vimp_BoostMLR_C
-List vimp_BoostMLR_C(NumericMatrix Org_x, NumericMatrix Org_y, NumericVector tm, NumericVector id, NumericVector x_Mean, NumericVector x_Std_Error, NumericVector y_Mean, NumericVector y_Std_Error, int n, IntegerVector ni, int N, int L, int K, int p, int H, IntegerVector Dk, int n_unq_tm, LogicalVector UseRaw, List id_index, List tm_index, List unq_x_New, IntegerVector Index_Bt, IntegerVector vimp_set, bool joint, NumericMatrix Bt, List Bt_H, List Bx, List Bxt, List Bx_K, List Beta_Hat_List, IntegerVector Mopt, double nu, NumericVector rmse, bool Time_Varying, NumericVector Vec_zero, NumericMatrix mu_zero_vec);
-RcppExport SEXP _BoostMLR_vimp_BoostMLR_C(SEXP Org_xSEXP, SEXP Org_ySEXP, SEXP tmSEXP, SEXP idSEXP, SEXP x_MeanSEXP, SEXP x_Std_ErrorSEXP, SEXP y_MeanSEXP, SEXP y_Std_ErrorSEXP, SEXP nSEXP, SEXP niSEXP, SEXP NSEXP, SEXP LSEXP, SEXP KSEXP, SEXP pSEXP, SEXP HSEXP, SEXP DkSEXP, SEXP n_unq_tmSEXP, SEXP UseRawSEXP, SEXP id_indexSEXP, SEXP tm_indexSEXP, SEXP unq_x_NewSEXP, SEXP Index_BtSEXP, SEXP vimp_setSEXP, SEXP jointSEXP, SEXP BtSEXP, SEXP Bt_HSEXP, SEXP BxSEXP, SEXP BxtSEXP, SEXP Bx_KSEXP, SEXP Beta_Hat_ListSEXP, SEXP MoptSEXP, SEXP nuSEXP, SEXP rmseSEXP, SEXP Time_VaryingSEXP, SEXP Vec_zeroSEXP, SEXP mu_zero_vecSEXP) {
+List vimp_BoostMLR_C(NumericMatrix Org_x, NumericMatrix Org_y, NumericVector tm, NumericVector id, NumericVector x_Mean, NumericVector x_Std_Error, NumericVector y_Mean, NumericVector y_Std_Error, int n, IntegerVector ni, int N, int L, int K, int p, int H, IntegerVector Dk, int n_unq_tm, LogicalVector UseRaw, List id_index, List tm_index, List unq_x_New, IntegerVector Index_Bt, IntegerVector vimp_set, bool joint, NumericMatrix Bt, List Bt_H, List Bx, List Bxt, List Bx_K, List Beta_Hat_List, IntegerVector Mopt, double nu, NumericVector rmse, bool Time_Varying, NumericVector Vec_zero, NumericMatrix mu_zero_vec, bool setting_seed, unsigned long int seed_value);
+RcppExport SEXP _BoostMLR_vimp_BoostMLR_C(SEXP Org_xSEXP, SEXP Org_ySEXP, SEXP tmSEXP, SEXP idSEXP, SEXP x_MeanSEXP, SEXP x_Std_ErrorSEXP, SEXP y_MeanSEXP, SEXP y_Std_ErrorSEXP, SEXP nSEXP, SEXP niSEXP, SEXP NSEXP, SEXP LSEXP, SEXP KSEXP, SEXP pSEXP, SEXP HSEXP, SEXP DkSEXP, SEXP n_unq_tmSEXP, SEXP UseRawSEXP, SEXP id_indexSEXP, SEXP tm_indexSEXP, SEXP unq_x_NewSEXP, SEXP Index_BtSEXP, SEXP vimp_setSEXP, SEXP jointSEXP, SEXP BtSEXP, SEXP Bt_HSEXP, SEXP BxSEXP, SEXP BxtSEXP, SEXP Bx_KSEXP, SEXP Beta_Hat_ListSEXP, SEXP MoptSEXP, SEXP nuSEXP, SEXP rmseSEXP, SEXP Time_VaryingSEXP, SEXP Vec_zeroSEXP, SEXP mu_zero_vecSEXP, SEXP setting_seedSEXP, SEXP seed_valueSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -669,7 +732,9 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< bool >::type Time_Varying(Time_VaryingSEXP);
     Rcpp::traits::input_parameter< NumericVector >::type Vec_zero(Vec_zeroSEXP);
     Rcpp::traits::input_parameter< NumericMatrix >::type mu_zero_vec(mu_zero_vecSEXP);
-    rcpp_result_gen = Rcpp::wrap(vimp_BoostMLR_C(Org_x, Org_y, tm, id, x_Mean, x_Std_Error, y_Mean, y_Std_Error, n, ni, N, L, K, p, H, Dk, n_unq_tm, UseRaw, id_index, tm_index, unq_x_New, Index_Bt, vimp_set, joint, Bt, Bt_H, Bx, Bxt, Bx_K, Beta_Hat_List, Mopt, nu, rmse, Time_Varying, Vec_zero, mu_zero_vec));
+    Rcpp::traits::input_parameter< bool >::type setting_seed(setting_seedSEXP);
+    Rcpp::traits::input_parameter< unsigned long int >::type seed_value(seed_valueSEXP);
+    rcpp_result_gen = Rcpp::wrap(vimp_BoostMLR_C(Org_x, Org_y, tm, id, x_Mean, x_Std_Error, y_Mean, y_Std_Error, n, ni, N, L, K, p, H, Dk, n_unq_tm, UseRaw, id_index, tm_index, unq_x_New, Index_Bt, vimp_set, joint, Bt, Bt_H, Bx, Bxt, Bx_K, Beta_Hat_List, Mopt, nu, rmse, Time_Varying, Vec_zero, mu_zero_vec, setting_seed, seed_value));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -697,13 +762,17 @@ static const R_CallMethodDef CallEntries[] = {
     {"_BoostMLR_Matrix_Sum_C_NA", (DL_FUNC) &_BoostMLR_Matrix_Sum_C_NA, 2},
     {"_BoostMLR_l2Dist_Vector_C", (DL_FUNC) &_BoostMLR_l2Dist_Vector_C, 3},
     {"_BoostMLR_l2Dist_Vector_C_NA", (DL_FUNC) &_BoostMLR_l2Dist_Vector_C_NA, 3},
-    {"_BoostMLR_randomShuffle", (DL_FUNC) &_BoostMLR_randomShuffle, 1},
-    {"_BoostMLR_int_randomShuffle", (DL_FUNC) &_BoostMLR_int_randomShuffle, 1},
+    {"_BoostMLR_set_seed", (DL_FUNC) &_BoostMLR_set_seed, 1},
+    {"_BoostMLR_randomShuffle", (DL_FUNC) &_BoostMLR_randomShuffle, 6},
+    {"_BoostMLR_int_randomShuffle", (DL_FUNC) &_BoostMLR_int_randomShuffle, 6},
+    {"_BoostMLR_Reverse_Ordering", (DL_FUNC) &_BoostMLR_Reverse_Ordering, 1},
     {"_BoostMLR_RemoveNA", (DL_FUNC) &_BoostMLR_RemoveNA, 1},
     {"_BoostMLR_stl_sort", (DL_FUNC) &_BoostMLR_stl_sort, 1},
     {"_BoostMLR_stl_sort_NA", (DL_FUNC) &_BoostMLR_stl_sort_NA, 1},
     {"_BoostMLR_stl_sort_reverse", (DL_FUNC) &_BoostMLR_stl_sort_reverse, 1},
     {"_BoostMLR_stl_sort_reverse_NA", (DL_FUNC) &_BoostMLR_stl_sort_reverse_NA, 1},
+    {"_BoostMLR_unique_C", (DL_FUNC) &_BoostMLR_unique_C, 1},
+    {"_BoostMLR_unique_C_NA", (DL_FUNC) &_BoostMLR_unique_C_NA, 1},
     {"_BoostMLR_sort_unique_C", (DL_FUNC) &_BoostMLR_sort_unique_C, 1},
     {"_BoostMLR_sort_unique_C_NA", (DL_FUNC) &_BoostMLR_sort_unique_C_NA, 1},
     {"_BoostMLR_Which_Max_Matrix", (DL_FUNC) &_BoostMLR_Which_Max_Matrix, 1},
@@ -714,11 +783,11 @@ static const R_CallMethodDef CallEntries[] = {
     {"_BoostMLR_Rho_Inv_C", (DL_FUNC) &_BoostMLR_Rho_Inv_C, 2},
     {"_BoostMLR_MatrixInversion_Equicorrelation_C", (DL_FUNC) &_BoostMLR_MatrixInversion_Equicorrelation_C, 3},
     {"_BoostMLR_Matrix_Vector_Multiplication_C", (DL_FUNC) &_BoostMLR_Matrix_Vector_Multiplication_C, 2},
-    {"_BoostMLR_DataProcessing_C", (DL_FUNC) &_BoostMLR_DataProcessing_C, 5},
-    {"_BoostMLR_BoostMLR_C", (DL_FUNC) &_BoostMLR_BoostMLR_C, 41},
-    {"_BoostMLR_update_BoostMLR_C", (DL_FUNC) &_BoostMLR_update_BoostMLR_C, 62},
-    {"_BoostMLR_predict_BoostMLR_C", (DL_FUNC) &_BoostMLR_predict_BoostMLR_C, 28},
-    {"_BoostMLR_vimp_BoostMLR_C", (DL_FUNC) &_BoostMLR_vimp_BoostMLR_C, 36},
+    {"_BoostMLR_DataProcessing_C", (DL_FUNC) &_BoostMLR_DataProcessing_C, 7},
+    {"_BoostMLR_BoostMLR_C", (DL_FUNC) &_BoostMLR_BoostMLR_C, 44},
+    {"_BoostMLR_update_BoostMLR_C", (DL_FUNC) &_BoostMLR_update_BoostMLR_C, 64},
+    {"_BoostMLR_predict_BoostMLR_C", (DL_FUNC) &_BoostMLR_predict_BoostMLR_C, 31},
+    {"_BoostMLR_vimp_BoostMLR_C", (DL_FUNC) &_BoostMLR_vimp_BoostMLR_C, 38},
     {NULL, NULL, 0}
 };
 

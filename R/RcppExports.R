@@ -89,12 +89,20 @@ l2Dist_Vector_C_NA <- function(x1, x2, ID) {
     .Call(`_BoostMLR_l2Dist_Vector_C_NA`, x1, x2, ID)
 }
 
-randomShuffle <- function(a) {
-    .Call(`_BoostMLR_randomShuffle`, a)
+set_seed <- function(seed) {
+    invisible(.Call(`_BoostMLR_set_seed`, seed))
 }
 
-int_randomShuffle <- function(a) {
-    .Call(`_BoostMLR_int_randomShuffle`, a)
+randomShuffle <- function(x, size, setting_seed, seed_value, replace = FALSE, p = NULL) {
+    .Call(`_BoostMLR_randomShuffle`, x, size, setting_seed, seed_value, replace, p)
+}
+
+int_randomShuffle <- function(x, size, setting_seed, seed_value, replace = FALSE, p = NULL) {
+    .Call(`_BoostMLR_int_randomShuffle`, x, size, setting_seed, seed_value, replace, p)
+}
+
+Reverse_Ordering <- function(a) {
+    .Call(`_BoostMLR_Reverse_Ordering`, a)
 }
 
 RemoveNA <- function(x) {
@@ -115,6 +123,14 @@ stl_sort_reverse <- function(x) {
 
 stl_sort_reverse_NA <- function(x) {
     .Call(`_BoostMLR_stl_sort_reverse_NA`, x)
+}
+
+unique_C <- function(x) {
+    .Call(`_BoostMLR_unique_C`, x)
+}
+
+unique_C_NA <- function(x) {
+    .Call(`_BoostMLR_unique_C_NA`, x)
 }
 
 sort_unique_C <- function(x) {
@@ -157,23 +173,23 @@ Matrix_Vector_Multiplication_C <- function(x, y) {
     .Call(`_BoostMLR_Matrix_Vector_Multiplication_C`, x, y)
 }
 
-DataProcessing_C <- function(Org_x, Org_y, id, tm, x_miss) {
-    .Call(`_BoostMLR_DataProcessing_C`, Org_x, Org_y, id, tm, x_miss)
+DataProcessing_C <- function(Org_x, Org_y, id, tm, unq_id, x_miss, Trace) {
+    .Call(`_BoostMLR_DataProcessing_C`, Org_x, Org_y, id, tm, unq_id, x_miss, Trace)
 }
 
-BoostMLR_C <- function(Org_x, Org_y, id, tm, x, y, x_Mean, x_Std_Error, y_Mean, y_Std_Error, n, K, L, H, Dk, ni, N, unq_id, unq_tm, unq_x, id_index, Bt, Bx, Bx_Scale, Time_Add_New, Time_Unmatch, nu, M, Mod_Grad, UseRaw, Lambda_Ridge_Vec, Ridge_Penalty, Shrink, lower_perc, upper_perc, Lambda_Scale, NLambda, VarFlag, rho, phi, Verbose) {
-    .Call(`_BoostMLR_BoostMLR_C`, Org_x, Org_y, id, tm, x, y, x_Mean, x_Std_Error, y_Mean, y_Std_Error, n, K, L, H, Dk, ni, N, unq_id, unq_tm, unq_x, id_index, Bt, Bx, Bx_Scale, Time_Add_New, Time_Unmatch, nu, M, Mod_Grad, UseRaw, Lambda_Ridge_Vec, Ridge_Penalty, Shrink, lower_perc, upper_perc, Lambda_Scale, NLambda, VarFlag, rho, phi, Verbose)
+BoostMLR_C <- function(Org_x, Org_y, id, tm, x, y, x_Mean, x_Std_Error, y_Mean, y_Std_Error, n, K, L, H, Dk, ni, N, unq_id, unq_tm, unq_x, id_index, Bt, Bx, Bx_Scale, Time_Add_New, Time_Unmatch, nu, M, Mod_Grad, UseRaw, Lambda_Ridge_Vec, Ridge_Penalty, Shrink, lower_perc, upper_perc, Lambda_Scale, NLambda, VarFlag, rho, phi, setting_seed, seed_value, Verbose, Trace) {
+    .Call(`_BoostMLR_BoostMLR_C`, Org_x, Org_y, id, tm, x, y, x_Mean, x_Std_Error, y_Mean, y_Std_Error, n, K, L, H, Dk, ni, N, unq_id, unq_tm, unq_x, id_index, Bt, Bx, Bx_Scale, Time_Add_New, Time_Unmatch, nu, M, Mod_Grad, UseRaw, Lambda_Ridge_Vec, Ridge_Penalty, Shrink, lower_perc, upper_perc, Lambda_Scale, NLambda, VarFlag, rho, phi, setting_seed, seed_value, Verbose, Trace)
 }
 
-update_BoostMLR_C <- function(Org_x, Org_y, id, tm, x, y, x_Mean, x_Std_Error, y_Mean, y_Std_Error, n, K, L, H, Dk, ni, N, unq_id, unq_tm, unq_x, id_index, tm_index, x_index, Bt, Bx, Bt_H, Bx_K, Bxt, Bx_Scale, nu, M, M_New, UseRaw, Shrink, Ridge_Penalty, Lambda_Ridge_Vec, Lambda_Scale, NLambda, lower_perc, upper_perc, Lambda_List, mu, mu_List, mu_zero, Vec_zero, Error_Rate, Variable_Select, Response_Select, Beta_Hat_List, Sum_Beta_Hat_List, Beta, Beta_Hat_List_Iter, lower_Beta_Hat_Noise, upper_Beta_Hat_Noise, List_Trace_Bxt_gm, Mod_Grad, VarFlag, phi, rho, Phi, Rho, Verbose) {
-    .Call(`_BoostMLR_update_BoostMLR_C`, Org_x, Org_y, id, tm, x, y, x_Mean, x_Std_Error, y_Mean, y_Std_Error, n, K, L, H, Dk, ni, N, unq_id, unq_tm, unq_x, id_index, tm_index, x_index, Bt, Bx, Bt_H, Bx_K, Bxt, Bx_Scale, nu, M, M_New, UseRaw, Shrink, Ridge_Penalty, Lambda_Ridge_Vec, Lambda_Scale, NLambda, lower_perc, upper_perc, Lambda_List, mu, mu_List, mu_zero, Vec_zero, Error_Rate, Variable_Select, Response_Select, Beta_Hat_List, Sum_Beta_Hat_List, Beta, Beta_Hat_List_Iter, lower_Beta_Hat_Noise, upper_Beta_Hat_Noise, List_Trace_Bxt_gm, Mod_Grad, VarFlag, phi, rho, Phi, Rho, Verbose)
+update_BoostMLR_C <- function(Org_x, Org_y, id, tm, x, y, x_Mean, x_Std_Error, y_Mean, y_Std_Error, n, K, L, H, Dk, ni, N, unq_id, unq_tm, unq_x, id_index, tm_index, x_index, Bt, Bx, Bt_H, Bx_K, Bxt, Bx_Scale, nu, M, M_New, UseRaw, Shrink, Ridge_Penalty, Lambda_Ridge_Vec, Lambda_Scale, NLambda, lower_perc, upper_perc, Lambda_List, mu, mu_List, mu_zero, Vec_zero, Error_Rate, Variable_Select, Response_Select, Beta_Hat_List, Sum_Beta_Hat_List, Beta, Beta_Hat_List_Iter, lower_Beta_Hat_Noise, upper_Beta_Hat_Noise, List_Trace_Bxt_gm, Mod_Grad, VarFlag, phi, rho, Phi, Rho, setting_seed, seed_value, Verbose) {
+    .Call(`_BoostMLR_update_BoostMLR_C`, Org_x, Org_y, id, tm, x, y, x_Mean, x_Std_Error, y_Mean, y_Std_Error, n, K, L, H, Dk, ni, N, unq_id, unq_tm, unq_x, id_index, tm_index, x_index, Bt, Bx, Bt_H, Bx_K, Bxt, Bx_Scale, nu, M, M_New, UseRaw, Shrink, Ridge_Penalty, Lambda_Ridge_Vec, Lambda_Scale, NLambda, lower_perc, upper_perc, Lambda_List, mu, mu_List, mu_zero, Vec_zero, Error_Rate, Variable_Select, Response_Select, Beta_Hat_List, Sum_Beta_Hat_List, Beta, Beta_Hat_List_Iter, lower_Beta_Hat_Noise, upper_Beta_Hat_Noise, List_Trace_Bxt_gm, Mod_Grad, VarFlag, phi, rho, Phi, Rho, setting_seed, seed_value, Verbose)
 }
 
-predict_BoostMLR_C <- function(Org_x, tm, id, Org_y, x_Mean, x_Std_Error, y_Mean, y_Std_Error, K, L, H, Dk, unq_tm, unq_x, Bt, Bx, UseRaw, Time_Add_New, Time_Unmatch, Beta, Beta_Hat_List, testFlag, M, nu, Time_Varying, vimpFlag, vimpFlag_Coef, eps) {
-    .Call(`_BoostMLR_predict_BoostMLR_C`, Org_x, tm, id, Org_y, x_Mean, x_Std_Error, y_Mean, y_Std_Error, K, L, H, Dk, unq_tm, unq_x, Bt, Bx, UseRaw, Time_Add_New, Time_Unmatch, Beta, Beta_Hat_List, testFlag, M, nu, Time_Varying, vimpFlag, vimpFlag_Coef, eps)
+predict_BoostMLR_C <- function(Org_x, tm, id, Org_y, x_Mean, x_Std_Error, y_Mean, y_Std_Error, K, L, H, Dk, unq_id, unq_tm, unq_x, Bt, Bx, UseRaw, Time_Add_New, Time_Unmatch, Beta, Beta_Hat_List, testFlag, M, nu, Time_Varying, vimpFlag, vimpFlag_Coef, eps, setting_seed, seed_value) {
+    .Call(`_BoostMLR_predict_BoostMLR_C`, Org_x, tm, id, Org_y, x_Mean, x_Std_Error, y_Mean, y_Std_Error, K, L, H, Dk, unq_id, unq_tm, unq_x, Bt, Bx, UseRaw, Time_Add_New, Time_Unmatch, Beta, Beta_Hat_List, testFlag, M, nu, Time_Varying, vimpFlag, vimpFlag_Coef, eps, setting_seed, seed_value)
 }
 
-vimp_BoostMLR_C <- function(Org_x, Org_y, tm, id, x_Mean, x_Std_Error, y_Mean, y_Std_Error, n, ni, N, L, K, p, H, Dk, n_unq_tm, UseRaw, id_index, tm_index, unq_x_New, Index_Bt, vimp_set, joint, Bt, Bt_H, Bx, Bxt, Bx_K, Beta_Hat_List, Mopt, nu, rmse, Time_Varying, Vec_zero, mu_zero_vec) {
-    .Call(`_BoostMLR_vimp_BoostMLR_C`, Org_x, Org_y, tm, id, x_Mean, x_Std_Error, y_Mean, y_Std_Error, n, ni, N, L, K, p, H, Dk, n_unq_tm, UseRaw, id_index, tm_index, unq_x_New, Index_Bt, vimp_set, joint, Bt, Bt_H, Bx, Bxt, Bx_K, Beta_Hat_List, Mopt, nu, rmse, Time_Varying, Vec_zero, mu_zero_vec)
+vimp_BoostMLR_C <- function(Org_x, Org_y, tm, id, x_Mean, x_Std_Error, y_Mean, y_Std_Error, n, ni, N, L, K, p, H, Dk, n_unq_tm, UseRaw, id_index, tm_index, unq_x_New, Index_Bt, vimp_set, joint, Bt, Bt_H, Bx, Bxt, Bx_K, Beta_Hat_List, Mopt, nu, rmse, Time_Varying, Vec_zero, mu_zero_vec, setting_seed, seed_value) {
+    .Call(`_BoostMLR_vimp_BoostMLR_C`, Org_x, Org_y, tm, id, x_Mean, x_Std_Error, y_Mean, y_Std_Error, n, ni, N, L, K, p, H, Dk, n_unq_tm, UseRaw, id_index, tm_index, unq_x_New, Index_Bt, vimp_set, joint, Bt, Bt_H, Bx, Bxt, Bx_K, Beta_Hat_List, Mopt, nu, rmse, Time_Varying, Vec_zero, mu_zero_vec, setting_seed, seed_value)
 }
 

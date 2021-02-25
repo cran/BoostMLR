@@ -17,6 +17,8 @@ predictBoostMLR(Object,
                 M,
                 importance = FALSE,
                 eps = 1e-5,
+                setting_seed = FALSE,
+                seed_value = 100L,
                 ...)
 }
 \arguments{
@@ -43,6 +45,8 @@ to the value specified in the \code{Object}. If unspecified, value from
 the \code{Object} will be used.}
 \item{importance}{Whether to calculate standardized variable importance (VIMP) for each covariate?}
 \item{eps}{Tolerance value used for determining the optimal \code{M}.}
+\item{setting_seed}{Set \code{setting_seed} = TRUE if you intend to reproduce the result.}
+\item{seed_value}{Seed value.}
 \item{...}{Further arguments passed to or from other methods.}
 }
 

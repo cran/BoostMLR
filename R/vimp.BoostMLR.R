@@ -1,4 +1,5 @@
-vimp.BoostMLR <- function(Object,xvar.names = NULL,joint = FALSE){
+vimp.BoostMLR <- function(Object,xvar.names = NULL,joint = FALSE,setting_seed = FALSE,
+                         seed_value = 100L){
   
    if(sum(inherits(Object, c("BoostMLR", "predict"), TRUE) == c(1, 2)) != 2) {
     stop("This function only works for objects of class `(BoostMLR, predict)'")
@@ -117,7 +118,9 @@ obj_C <- vimp_BoostMLR_C(Org_x,
                          rmse,
                          Time_Varying,
                          Vec_zero,
-                         mu_zero_vec)
+                         mu_zero_vec,
+                         setting_seed,
+                         seed_value)
 
 vimp <- obj_C$vimp
 names(vimp) <- y_Names

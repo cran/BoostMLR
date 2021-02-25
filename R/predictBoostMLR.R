@@ -6,6 +6,8 @@ predictBoostMLR    <-  function(Object,
                                  M,
                                  importance = FALSE,
                                  eps = 1e-5,
+                                 setting_seed = FALSE,
+                                 seed_value = 100L,
                                  ...)
 {
   
@@ -148,6 +150,44 @@ predictBoostMLR    <-  function(Object,
     colnames(Time_Add_New) <- "Time_Add"
   }
   
+
+  #---------------------------------------------------------------------------------- 
+  # Date: 12/17/2020
+  
+  # In the following codes, if the id is character or factor, we convert into numeric
+  # without changing the values.
+  #----------------------------------------------------------------------------------
+   
+  if(is.character(id)){
+    id <- as.numeric(id)
+  }
+ 
+ if(is.factor(id)){
+   id <- as.numeric(levels(id))[id]
+ }
+
+  #---------------------------------------------------------------------------------- 
+  # Date: 12/17/2020
+  
+  # while working on BoostMLR manuscript, I realized that the function Order_Time
+  # works only when Dt_Add is non-null. We need this in every situation so that
+  # I can plot beta coefficient as a function of time. This is done in the following
+  # codes. Note that I have modified the Order_Time function in the utilities file.
+  #----------------------------------------------------------------------------------
+    sort_id <- is.hidden.sort_id(user.option)
+    if(sort_id){
+      unq_id <- sort_unique_C_NA(id)
+    } else
+    {
+      unq_id <- unique_C_NA(id)
+    }
+
+    Ord_id_tm <- Order_Time(ID = id,Time = tm,unq_id = unq_id)
+    id  <- id[Ord_id_tm]
+    tm  <- tm[Ord_id_tm]
+    x   <- x[Ord_id_tm,,drop = FALSE]
+    y   <- y[Ord_id_tm,,drop = FALSE]
+
   if(!is.matrix(x)){
     x <- data.matrix(x)
   }
@@ -209,6 +249,7 @@ predictBoostMLR    <-  function(Object,
                               L,
                               H,
                               Dk,
+                              unq_id,
                               unq_tm,
                               unq_x,
                               Bt,
@@ -224,7 +265,9 @@ predictBoostMLR    <-  function(Object,
                               Time_Varying,
                               vimpFlag,
                               vimpFlag_Coef,
-                              eps)
+                              eps,
+                              setting_seed,
+                              seed_value)
   
   Error_Rate <- obj_C$Error_Rate
   colnames(Error_Rate) <- y_Names

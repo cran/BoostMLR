@@ -8,11 +8,15 @@
 \usage{
 \method{vimp}{BoostMLR}(Object,
      xvar.names = NULL,
-     joint = FALSE)}
+     joint = FALSE,
+     setting_seed = FALSE,
+     seed_value = 100L)}
 \arguments{
   \item{Object}{A boosting object of class \code{(BoostMLR, predict)}.}
   \item{xvar.names}{Names of the x-variables for which VIMP is requested. If NULL, VIMP is calcuated for all the covariates.}
   \item{joint}{Whether to estimate VIMP for each covariate from \code{xvar.names} or a joint VIMP for multiple covariates?}
+  \item{setting_seed}{Set \code{setting_seed} = TRUE if you intend to reproduce the result.}
+  \item{seed_value}{Seed value.}
 }
 \details{
   Standardized variable importance (VIMP) is calcuated for each covariate or a joint VIMP is calculated for all the covariates specified in \code{xvar.names}.

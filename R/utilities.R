@@ -1,23 +1,39 @@
-#-----------------------------------------------------------------------------------
-# Find the index of the data based on increasing value of time for a given subject
-Order_Time <- function(ID,Time){
-  if(is.numeric(ID)){
-    unq_id <- sort(unique(ID))
-  }else
-  {
-    unq_id <- unique(ID)
+##------------------------------------------------------------------------
+# Date: 12/11/2020
+
+# This is replaced by earlier function which has only the first two arguments.
+# Arrange the longitudinal data in the order to time for each subject.
+# Also user can request to sort the ID in ascending order.
+##------------------------------------------------------------------------
+
+is.hidden.sort_id <-  function (user.option) {
+  if ( is.null(user.option$sort_id) ) {
+    TRUE
   }
+  else {
+    user.option$sort_id
+  }
+}
+
+##------------------------------------------------------------------------
+# Date: 12/11/2020
+
+# Below we replace unique(x) and sort(unique(x)) function from R to
+# the following C functions. That way when we calculate unq_id in 
+# DataProcessing_C function, the result matches.
+##------------------------------------------------------------------------
+
+Order_Time <- function(ID,Time,unq_id){
   n <- length(unq_id)
   ID_index <- unlist(lapply(1:n,function(i){
-    Temp_index <- which(ID == unq_id[i])
-    Temp_time <- Time[Temp_index]
-    Ord_time <- order(Temp_time)
-    Temp_index <- Temp_index[Ord_time]
-    Temp_index
+     Temp_index <- which(ID == unq_id[i])
+     Temp_time <- Time[Temp_index]
+     Ord_time <- order(Temp_time)
+     Temp_index <- Temp_index[Ord_time]
+     Temp_index
   }))
   return(ID_index)
 }
-
 
 
 #--------------------------------------------------

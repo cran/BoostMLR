@@ -19,6 +19,10 @@ BoostMLR     <- function(x,
                          upper_perc = 0.75,
                          NLambda = 100,
                          Verbose = TRUE,
+                         Trace = FALSE,
+                         lambda = 0,
+                         setting_seed = FALSE,
+                         seed_value = 100L,
                          ...)
 {
   if(missing(y)){
@@ -104,7 +108,7 @@ BoostMLR     <- function(x,
   if ( any(is.na(id))  ) {  
     stop("missing values encountered in id: remove observations with missing values")
   }
-  
+
   Time_Unmatch <- rep(FALSE,ncol(x))
   N <- nrow(y)
   
@@ -112,7 +116,7 @@ BoostMLR     <- function(x,
  Lambda_Scale <- 1
  rho <- is.hidden.rho(user.option)
  phi <- is.hidden.phi(user.option)
- Lambda_Ridge <- 0
+ Lambda_Ridge <- lambda
  Ridge_Penalty <- FALSE
   
  dt_Add <- is.hidden.dt_Add(user.option) 
@@ -181,6 +185,43 @@ BoostMLR     <- function(x,
     colnames(Time_Add_New) <- "Time_Add"
   }
   
+  #---------------------------------------------------------------------------------- 
+  # Date: 12/11/2020
+  
+  # In the following codes, if the id is character or factor, we convert into numeric
+  # without changing the values.
+  #----------------------------------------------------------------------------------
+   
+  if(is.character(id)){
+    id <- as.numeric(id)
+  }
+ 
+ if(is.factor(id)){
+   id <- as.numeric(levels(id))[id]
+ }
+
+  #---------------------------------------------------------------------------------- 
+  # Date: 12/11/2020
+  
+  # while working on BoostMLR manuscript, I realized that the function Order_Time
+  # works only when Dt_Add is non-null. We need this in every situation so that
+  # I can plot beta coefficient as a function of time. This is done in the following
+  # codes. Note that I have modified the Order_Time function in the utilities file.
+  #----------------------------------------------------------------------------------
+    sort_id <- is.hidden.sort_id(user.option)
+    if(sort_id){
+      unq_id <- sort_unique_C_NA(id)
+    } else
+    {
+      unq_id <- unique_C_NA(id)
+    }
+
+    Ord_id_tm <- Order_Time(ID = id,Time = tm,unq_id = unq_id)
+    id  <- id[Ord_id_tm]
+    tm  <- tm[Ord_id_tm]
+    x   <- x[Ord_id_tm,,drop = FALSE]
+    y   <- y[Ord_id_tm,,drop = FALSE]
+
   if(!is.matrix(x)){
     x <- data.matrix(x)
   }
@@ -287,7 +328,9 @@ BoostMLR     <- function(x,
                                     y,
                                     id, 
                                     tm,
-                                    x_miss)
+                                    unq_id,
+                                    x_miss,
+                                    Trace)
   
   Org_x       <- ProcessedData$Data$Org_x
   Org_y       <- ProcessedData$Data$Org_y
@@ -453,7 +496,10 @@ BoostMLR     <- function(x,
                        VarFlag,
                        rho,
                        phi,
-                       Verbose)
+                       setting_seed,
+                       seed_value,
+                       Verbose,
+                       Trace)
   
   
   Tm_Beta <- lapply(1:obj_C$Dimensions$L,function(l){
@@ -473,16 +519,64 @@ BoostMLR     <- function(x,
     Out
   })
 
+
+  #---------------------------------------------------------------------------------- 
+  # Date: 12/11/2020
+  
+  # It was realized that it makes more sense to show plots of beta on the standardized
+  # scale rather than on the original scale. Therefore, along with Tm_Beta, I
+  # have calculated Tm_Beta_Std in the following codes.
+  #----------------------------------------------------------------------------------
+
+  Tm_Beta_Std <- lapply(1:obj_C$Dimensions$L,function(l){
+    Out <- matrix(unlist(lapply(1:obj_C$Dimensions$K,function(k){
+      if(!UseRaw[k]){
+        rep(NA, obj_C$Dimensions$N)
+      }else
+      {
+        Reduce("+",lapply(1:obj_C$Dimensions$H,function(h){
+          unlist(lapply(1:obj_C$Dimensions$n,function(i){
+            obj_C$Beta_Estimate$Tm_Beta_Std_C[[k]][[1]][[h]][[l]][[i]]
+          }))
+        }))
+      }
+    })),ncol = obj_C$Dimensions$K,byrow = FALSE)
+    colnames(Out) <- x_Names
+    Out
+  })
+
+
   if(Time_Varying == FALSE){
     Tm_Beta <- lapply(1:obj_C$Dimensions$L,function(l){
       Tm_Beta[[l]][1,,drop = TRUE]
     })
   }
-  
   names(Tm_Beta) <- y_Names
+
+  #---------------------------------------------------------------------------------- 
+  # Date: 12/11/2020
+  
+  # Added Tm_Beta_Std as a part of Beta_Estimate
+  #----------------------------------------------------------------------------------
+
+    if(Time_Varying == FALSE){
+    Tm_Beta_Std <- lapply(1:obj_C$Dimensions$L,function(l){
+      Tm_Beta_Std[[l]][1,,drop = TRUE]
+    })
+  }
+
+  names(Tm_Beta_Std) <- y_Names
+  
   
   Beta_Estimate <- obj_C$Beta_Estimate
   Beta_Estimate$Tm_Beta <- Tm_Beta
+
+  #---------------------------------------------------------------------------------- 
+  # Date: 12/11/2020
+  
+  # Added Tm_Beta_Std as a part of Beta_Estimate
+  #----------------------------------------------------------------------------------
+  Beta_Estimate$Tm_Beta_Std <- Tm_Beta_Std
   
   Rho <- Phi <- matrix(NA,nrow = M,ncol = L)
   colnames(Phi) <- y_Names
@@ -543,9 +637,12 @@ BoostMLR     <- function(x,
                       mu_zero = obj_C$mu_zero,
                       Vec_zero = obj_C$Vec_zero,
                       Mod_Grad = Mod_Grad,
+                      sort_id = sort_id,
                       phi = phi,
                       rho = rho,
                       Time_Unmatch = Time_Unmatch,
+                      setting_seed = setting_seed,
+                      seed_value = seed_value,
                       Time_Add_New = if(is.null(dt_Add)) NULL else Time_Add_New)
 
   
@@ -580,6 +677,6 @@ BoostMLR     <- function(x,
               Lambda_List = obj_C$Lambda_List,
               Grow_Object = Grow_Object)
   
-  class(obj) <- c("BoostMLR")
+  class(obj) <- c("BoostMLR", "grow")
   invisible(obj)
 }

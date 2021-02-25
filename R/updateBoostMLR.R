@@ -70,6 +70,9 @@ updateBoostMLR <- function(Object,M_Add,Verbose = TRUE,...){
   upper_Beta_Hat_Noise <- Object$Grow_Object$Beta_Estimate$upper_Beta_Hat_Noise
   List_Trace_Bxt_gm    <- Object$Grow_Object$Beta_Estimate$List_Trace_Bxt_gm
   
+  setting_seed <-  Object$Grow_Object$setting_seed
+  seed_value   <-  Object$Grow_Object$seed_value
+
   M_New <- M + M_Add
   
   if(M_Add < 10){
@@ -137,6 +140,8 @@ updateBoostMLR <- function(Object,M_Add,Verbose = TRUE,...){
                              rho,
                              Phi,
                              Rho,
+                             setting_seed,
+                             seed_value,
                              Verbose)
   
   Tm_Beta <- lapply(1:obj_C$Dimensions$L,function(l){
@@ -156,6 +161,32 @@ updateBoostMLR <- function(Object,M_Add,Verbose = TRUE,...){
     Out
   })
 
+    #---------------------------------------------------------------------------------- 
+  # Date: 12/11/2020
+  
+  # It was realized that it makes more sense to show plots of beta on the standardized
+  # scale rather than on the original scale. Therefore, along with Tm_Beta, I
+  # have calculated Tm_Beta_Std in the following codes.
+  #----------------------------------------------------------------------------------
+
+  Tm_Beta_Std <- lapply(1:obj_C$Dimensions$L,function(l){
+    Out <- matrix(unlist(lapply(1:obj_C$Dimensions$K,function(k){
+      if(!UseRaw[k]){
+        rep(NA, obj_C$Dimensions$N)
+      }else
+      {
+        Reduce("+",lapply(1:obj_C$Dimensions$H,function(h){
+          unlist(lapply(1:obj_C$Dimensions$n,function(i){
+            obj_C$Beta_Estimate$Tm_Beta_Std_C[[k]][[1]][[h]][[l]][[i]]
+          }))
+        }))
+      }
+    })),ncol = obj_C$Dimensions$K,byrow = FALSE)
+    colnames(Out) <- x_Names
+    Out
+  })
+
+
   if(Time_Varying == FALSE){
     Tm_Beta <- lapply(1:obj_C$Dimensions$L,function(l){
       Tm_Beta[[l]][1,,drop = TRUE]
@@ -164,9 +195,32 @@ updateBoostMLR <- function(Object,M_Add,Verbose = TRUE,...){
   
   names(Tm_Beta) <- y_Names
   
+    #---------------------------------------------------------------------------------- 
+  # Date: 12/11/2020
+  
+  # Added Tm_Beta_Std as a part of Beta_Estimate
+  #----------------------------------------------------------------------------------
+
+    if(Time_Varying == FALSE){
+    Tm_Beta_Std <- lapply(1:obj_C$Dimensions$L,function(l){
+      Tm_Beta_Std[[l]][1,,drop = TRUE]
+    })
+  }
+
+  names(Tm_Beta_Std) <- y_Names
+
+
   Beta_Estimate <- obj_C$Beta_Estimate
   Beta_Estimate$Tm_Beta <- Tm_Beta
+
+  #---------------------------------------------------------------------------------- 
+  # Date: 12/11/2020
   
+  # Added Tm_Beta_Std as a part of Beta_Estimate
+  #----------------------------------------------------------------------------------
+  Beta_Estimate$Tm_Beta_Std <- Tm_Beta_Std
+
+
   Rho <- Phi <- matrix(NA,nrow = M_New,ncol = L)
   colnames(Phi) <- y_Names
   colnames(Rho) <- y_Names
@@ -231,6 +285,8 @@ updateBoostMLR <- function(Object,M_Add,Verbose = TRUE,...){
                       phi = phi,
                       rho = rho,
                       Time_Unmatch = Object$Grow_Object$Time_Unmatch,
+                      setting_seed = setting_seed,
+                      seed_value = seed_value,
                       Time_Add_New = Object$Grow_Object$Time_Add_New)
   
   

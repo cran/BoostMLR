@@ -526,7 +526,7 @@ double l2Dist_Vector_C_NA(NumericVector x1, NumericVector x2, List ID){
   }
   return out;
 }
-
+/*
 inline int randWrapper(const int n) { return floor(unif_rand()*n); }
 
 // [[Rcpp::export]]
@@ -542,6 +542,83 @@ Rcpp::IntegerVector int_randomShuffle(Rcpp::IntegerVector a) {
   std::random_shuffle(b.begin(), b.end(), randWrapper);
   return b;
 }
+
+
+// [[Rcpp::export]]
+IntegerVector int_randomShuffle(IntegerVector a) {
+  int n = a.size();
+  IntegerVector b(n);
+  for(int i = 0;i < n; ++i){
+    b[i] = i;
+  }
+  return b;
+}
+
+
+// [[Rcpp::export]]
+NumericVector randomShuffle(NumericVector x, int size, bool replace = false, sugar::probs_t p = R_NilValue){
+  return sample(x, size, replace, p);
+}
+
+// [[Rcpp::export]]
+IntegerVector int_randomShuffle(IntegerVector x, int size, bool replace = false, sugar::probs_t p = R_NilValue){
+  return sample(x, size, replace, p);
+}
+
+*/
+
+/*
+#---------------------------------------------------------------------------------- 
+# Date: 12/20/2020
+  
+# Add the following 3 function so that vimp from predictBoostMLR and from vimp.BoostMLR
+# functions match with each other.
+#----------------------------------------------------------------------------------
+*/
+
+// [[Rcpp::export]]
+void set_seed(unsigned long int seed) {
+  Rcpp::Environment base_env("package:base");
+  Rcpp::Function set_seed_r = base_env["set.seed"];
+  set_seed_r(seed);  
+}
+
+unsigned long int add_seed = 1;
+
+// [[Rcpp::export]]
+NumericVector randomShuffle(NumericVector x, int size, bool setting_seed, unsigned long int seed_value, bool replace = false, sugar::probs_t p = R_NilValue){
+  if(setting_seed) {
+    //Rcout << seed_value << "\n";
+    set_seed(seed_value);
+    return sample(x, size, replace, p);
+  }else
+  {
+    return sample(x, size, replace, p);
+  }
+}
+
+// [[Rcpp::export]]
+IntegerVector int_randomShuffle(IntegerVector x, int size, bool setting_seed, unsigned long int seed_value, bool replace = false, sugar::probs_t p = R_NilValue){
+  if(setting_seed){
+    set_seed(seed_value);
+    //Rcout << seed_value << "\n";
+    return sample(x, size, replace, p);
+  }else
+  {
+    return sample(x, size, replace, p);
+  }
+}
+
+// [[Rcpp::export]]
+IntegerVector Reverse_Ordering(IntegerVector a) {
+  int n = a.size();
+  IntegerVector b(n);
+  for(int i = 0;i < n;++i){
+    b[i] = n - i;
+  }
+  return b;
+}
+
 
 // [[Rcpp::export]]
 NumericVector RemoveNA(NumericVector x){
@@ -598,6 +675,18 @@ Rcpp::NumericVector stl_sort_reverse_NA(Rcpp::NumericVector x) {
   return y;
 }
 
+// [[Rcpp::export]]
+NumericVector unique_C(NumericVector x) {
+ NumericVector out = unique(x);
+  return out;
+}
+
+// [[Rcpp::export]]
+NumericVector unique_C_NA(NumericVector x) {
+  NumericVector x_new = RemoveNA(x);
+  NumericVector out = unique(x_new);
+  return out;
+}
 
 // [[Rcpp::export]]
 NumericVector sort_unique_C(NumericVector x) {
@@ -790,9 +879,24 @@ List DataProcessing_C(NumericMatrix Org_x,
                       NumericMatrix Org_y,
                       NumericVector id, 
                       NumericVector tm,
-                      bool x_miss)
+                      NumericVector unq_id,
+                      bool x_miss,
+                      bool Trace)
 {
-  NumericVector unq_id = sort_unique_C_NA(id);
+  if(Trace){
+    Rcout << "Currently at data processing step" << "\n";
+  }
+  
+  /*
+  #---------------------------------------------------------------------------------- 
+  # Date: 12/16/2020
+  
+  # Move the following line to the BoostMLR R function so it can help to order
+  # id in Order_Time function and instead add unq_id in the DataProcessing_C function.
+  #----------------------------------------------------------------------------------
+  */
+
+  //NumericVector unq_id = unique_C_NA(id);
   int n = unq_id.size();
   
   List id_index(n);
@@ -901,6 +1005,9 @@ List DataProcessing_C(NumericMatrix Org_x,
     _["Dimensions"] = Dimensions,
     _["Index"] = Index
   );
+  if(Trace){
+    Rcout << "Completed data processing step" << "\n";
+  }
 }
   
 // [[Rcpp::export]]
@@ -944,9 +1051,16 @@ List BoostMLR_C(NumericMatrix Org_x,
                 bool VarFlag,
                 NumericVector rho,
                 NumericVector phi,
-                bool Verbose)
+                bool setting_seed,
+                unsigned long int seed_value,
+                bool Verbose,
+                bool Trace)
   
 {
+  if(Trace){
+    Rcout << "At the start of BoostMLR function execution" << "\n";
+  }
+
   List tm_index(n);
   for(int i = 0; i < n; ++i){
     NumericVector tm_Temp(ni[i]);
@@ -1134,6 +1248,10 @@ List BoostMLR_C(NumericMatrix Org_x,
     Bxt[k] = Bxt_Dk;
   }
   
+  if(Trace){
+    Rcout << "Completed setting-up of B-spline matrices" << "\n";
+  }
+
   NumericMatrix mu_zero(N,L);
   for(int l = 0; l < L; ++l){
     for(int i = 0; i < N; ++i){
@@ -1200,6 +1318,10 @@ List BoostMLR_C(NumericMatrix Org_x,
   Beta_Hat_Old = Beta;
   List V_inv(L);
   
+  if(Trace){
+    Rcout << "Boosting iterations begin" << "\n";
+  }
+
   // Boosting iteration starts here...  
   
   for(int m = 0; m <  M; ++m){
@@ -1348,6 +1470,9 @@ List BoostMLR_C(NumericMatrix Org_x,
       }
     }else
     {
+      if(Trace){
+        Rcout << "First boosting iteration begins" << "\n";
+      }
       for(int k = 0; k < K; ++k){
         List Bxt_Temp_K = Bxt[k];
         NumericVector Bx_Scale_K = Bx_Scale[k];
@@ -1370,7 +1495,11 @@ List BoostMLR_C(NumericMatrix Org_x,
               NumericVector Bxt_n_2(n);
               NumericVector Bxt_gm_n(n);
               NumericVector gm_n_2(n);
+            //  if(Trace){
+            //      Rcout << "Calculation begins for the first boosting iteration" << "\n";
+            //  }
               for(int i = 0; i < n; ++i){
+
                 arma::mat V_inv_i = V_inv_l[i];
                 NumericVector Bxt_Temp_n = Bxt_Temp_H[i];
                 NumericVector gm_Temp_n = gm_Temp_L[i];
@@ -1378,6 +1507,9 @@ List BoostMLR_C(NumericMatrix Org_x,
                 NumericVector Bxt_ni_2(ni[i]);
                 NumericVector Bxt_gm_ni(ni[i]);
                 NumericVector gm_ni_2(ni[i]);
+              //  if(Trace){
+              //    Rcout << "Calculation for " << k << " and " << i << "\n";
+              //  }
                 for(int j = 0; j < ni[i]; ++j){
                   Bxt_ni_2[j] = Bxt_V[j] * Bxt_Temp_n[j];
                   Bxt_gm_ni[j] = Bxt_V[j] * gm_Temp_n[j];
@@ -1434,6 +1566,9 @@ List BoostMLR_C(NumericMatrix Org_x,
         Lambda[k] = Lambda_Dk;
         Beta_Hat[k] = Beta_Hat_Dk;
         Temp_Trace_Bxt_gm[k] = Temp_Trace_Bxt_gm_Dk;
+      }
+      if(Trace){
+        Rcout << "First boosting iteration ends" << "\n";
       } 
     }
     
@@ -1442,6 +1577,9 @@ List BoostMLR_C(NumericMatrix Org_x,
     
     if(Shrink){
       if(m == 0){
+     if(Trace){
+        Rcout << "Shrinkage: First boosting iteration begins" << "\n";
+      }
         for(int k = 0; k < K; ++k){
           List Bxt_Temp_K = Bxt[k];
           NumericVector Bx_Scale_K = Bx_Scale[k];
@@ -1469,7 +1607,8 @@ List BoostMLR_C(NumericMatrix Org_x,
                       count = count + 1;
                     }
                   }
-                NumericVector gm_unlist_noise = randomShuffle(gm_unlist);
+                seed_value = seed_value + add_seed;
+                NumericVector gm_unlist_noise = randomShuffle( gm_unlist,N,setting_seed,seed_value);
                   count = 0;
                     List gm_noise_n(n);
                     for(int i = 0; i < n; ++i){
@@ -1491,6 +1630,9 @@ List BoostMLR_C(NumericMatrix Org_x,
                   NumericVector Bxt_ni_2(ni[i]);
                   NumericVector Bxt_gm_ni(ni[i]);
                   NumericVector gm_noise_ni_2(ni[i]);
+                // if(Trace){
+                //  Rcout << "Shrinkage Calculation for " << k << " and " << i << "\n";
+                // }
                   for(int j = 0; j < ni[i]; ++j){
                     Bxt_ni_2[j] = Bxt_V[j] * Bxt_Temp_n[j];
                     Bxt_gm_ni[j] = Bxt_V[j] * gm_noise_Temp_n[j];
@@ -1502,7 +1644,7 @@ List BoostMLR_C(NumericMatrix Org_x,
                 }
                 double Trace_Bxt    = Sum_C_NA(Bxt_n_2);
                 double Trace_Bxt_gm = Sum_C_NA(Bxt_gm_n);
-                if(Trace_Bxt == 0.0){
+                if(Trace_Bxt < 0.001){
                   Beta_Hat_Noise_Temp[l_m]  = 0.0;
                 }else
                 {
@@ -1550,6 +1692,9 @@ List BoostMLR_C(NumericMatrix Org_x,
           lower_Beta_Hat_Noise[k] = lower_Beta_Hat_Dk;
           upper_Beta_Hat_Noise[k] = upper_Beta_Hat_Dk;
         }
+      if(Trace){
+        Rcout << "Shrinkage: First boosting iteration ends" << "\n";
+      } 
       }
 
       List Beta_Hat_New(K);
@@ -1787,6 +1932,10 @@ List BoostMLR_C(NumericMatrix Org_x,
     
   } 
   
+  if(Trace){
+    Rcout << "Boosting iterations end" << "\n";
+  }
+
   List Tm_Beta_C(K);
   for(int k = 0; k < K; ++k){
     if(UseRaw[k]){
@@ -1822,6 +1971,56 @@ List BoostMLR_C(NumericMatrix Org_x,
     }
   }
   
+
+/*
+  #---------------------------------------------------------------------------------- 
+  # Date: 12/11/2020
+  
+  # It was realized that it makes more sense to show plots of beta on the standardized
+  # scale rather than on the original scale. Therefore, along with Tm_Beta_C, I
+  # have calculated Tm_Beta_Std_C in the following codes.
+
+  # We added this in the list Beta_Estimate which is the output from this function.
+  #----------------------------------------------------------------------------------
+*/
+
+  List Tm_Beta_Std_C(K);
+  for(int k = 0; k < K; ++k){
+    if(UseRaw[k]){
+      List Beta_K = Beta[k];
+      List Tm_Beta_Dk(Dk[k]);
+      for(int d = 0; d < Dk[k]; ++d){
+        List Beta_Dk = Beta_K[d];
+        List Tm_Beta_H(H);
+        for(int h = 0; h < H; ++h){
+          NumericVector Beta_H = Beta_Dk[h];
+          List Bt_n = Bt_H[h];
+          List Tm_Beta_L(L);
+          for(int l = 0; l < L; ++l){
+            List Tm_Beta_n(n);
+            for(int i = 0; i < n; ++i){
+              NumericVector Bt_i = Bt_n[i];
+              NumericVector Tm_Beta_ni(ni[i]);
+              for(int j = 0; j < ni[i]; ++j){
+                Tm_Beta_ni[j] = Bt_i[j]*Beta_H[l];
+              }
+              Tm_Beta_n[i] = Tm_Beta_ni;
+            }
+            Tm_Beta_L[l] = Tm_Beta_n;
+          }
+          Tm_Beta_H[h] = Tm_Beta_L;
+        }
+        Tm_Beta_Dk[d] = Tm_Beta_H;
+      }
+      Tm_Beta_Std_C[k] = Tm_Beta_Dk;
+    }else
+    {
+      Tm_Beta_Std_C[k] = NA_REAL;
+    }
+  }
+
+
+
   List Data = List::create(
     _["Org_x"] = Org_x, 
     _["Org_y"] = Org_y,
@@ -1880,6 +2079,7 @@ List BoostMLR_C(NumericMatrix Org_x,
     _["Beta_Hat_List_Iter"] = Beta_Hat_List_Iter,
     _["Sum_Beta_Hat_List"] = Sum_Beta_Hat_List,
     _["Tm_Beta_C"] = Tm_Beta_C,
+    _["Tm_Beta_Std_C"] = Tm_Beta_Std_C,
     _["lower_Beta_Hat_Noise"] = lower_Beta_Hat_Noise,
     _["upper_Beta_Hat_Noise"] = upper_Beta_Hat_Noise,
     _["List_Trace_Bxt_gm"] = List_Trace_Bxt_gm
@@ -1903,6 +2103,9 @@ List BoostMLR_C(NumericMatrix Org_x,
     _["mu_zero"] = mu_zero,
     _["Vec_zero"] = Vec_zero
   );
+  if(Trace){
+    Rcout << "Completed BoostMLR execution step" << "\n";
+  }
 }
 
 
@@ -1970,6 +2173,8 @@ List update_BoostMLR_C(NumericMatrix Org_x,
                        NumericVector rho,
                        NumericMatrix Phi,
                        NumericMatrix Rho,
+                       bool setting_seed,
+                       unsigned long int seed_value,
                        bool Verbose)
 {
   
@@ -2316,7 +2521,8 @@ List update_BoostMLR_C(NumericMatrix Org_x,
                       count = count + 1;
                     }
                   }
-                  NumericVector gm_unlist_noise = randomShuffle(gm_unlist);
+                  seed_value = seed_value + add_seed;
+                  NumericVector gm_unlist_noise = randomShuffle(gm_unlist, N,setting_seed,seed_value);
                   count = 0;
                   List gm_noise_n(n);
                   for(int i = 0; i < n; ++i){
@@ -2668,6 +2874,54 @@ List update_BoostMLR_C(NumericMatrix Org_x,
       Tm_Beta_C[k] = NA_REAL;
     }
   }
+
+
+  /*
+  #---------------------------------------------------------------------------------- 
+  # Date: 12/11/2020
+  
+  # It was realized that it makes more sense to show plots of beta on the standardized
+  # scale rather than on the original scale. Therefore, along with Tm_Beta_C, I
+  # have calculated Tm_Beta_Std_C in the following codes.
+
+  # We added this in the list Beta_Estimate which is the output from this function.
+  #----------------------------------------------------------------------------------
+*/
+
+  List Tm_Beta_Std_C(K);
+  for(int k = 0; k < K; ++k){
+    if(UseRaw[k]){
+      List Beta_K = Beta[k];
+      List Tm_Beta_Dk(Dk[k]);
+      for(int d = 0; d < Dk[k]; ++d){
+        List Beta_Dk = Beta_K[d];
+        List Tm_Beta_H(H);
+        for(int h = 0; h < H; ++h){
+          NumericVector Beta_H = Beta_Dk[h];
+          List Bt_n = Bt_H[h];
+          List Tm_Beta_L(L);
+          for(int l = 0; l < L; ++l){
+            List Tm_Beta_n(n);
+            for(int i = 0; i < n; ++i){
+              NumericVector Bt_i = Bt_n[i];
+              NumericVector Tm_Beta_ni(ni[i]);
+              for(int j = 0; j < ni[i]; ++j){
+                Tm_Beta_ni[j] = Bt_i[j]*Beta_H[l];
+              }
+              Tm_Beta_n[i] = Tm_Beta_ni;
+            }
+            Tm_Beta_L[l] = Tm_Beta_n;
+          }
+          Tm_Beta_H[h] = Tm_Beta_L;
+        }
+        Tm_Beta_Dk[d] = Tm_Beta_H;
+      }
+      Tm_Beta_Std_C[k] = Tm_Beta_Dk;
+    }else
+    {
+      Tm_Beta_Std_C[k] = NA_REAL;
+    }
+  }
   
   List Data = List::create(
     _["Org_x"] = Org_x, 
@@ -2727,6 +2981,7 @@ List update_BoostMLR_C(NumericMatrix Org_x,
     _["Beta_Hat_List_Iter"] = Beta_Hat_List_Iter,
     _["Sum_Beta_Hat_List"] = Sum_Beta_Hat_List,
     _["Tm_Beta_C"] = Tm_Beta_C,
+    _["Tm_Beta_Std_C"] = Tm_Beta_Std_C,
     _["lower_Beta_Hat_Noise"] = lower_Beta_Hat_Noise,
     _["upper_Beta_Hat_Noise"] = upper_Beta_Hat_Noise,
     _["List_Trace_Bxt_gm"] = List_Trace_Bxt_gm
@@ -2765,6 +3020,7 @@ List predict_BoostMLR_C(NumericMatrix Org_x,
                         int L,
                         int H,
                         IntegerVector Dk,
+                        NumericVector unq_id,
                         NumericVector unq_tm,
                         List unq_x,
                         NumericMatrix Bt,
@@ -2780,10 +3036,12 @@ List predict_BoostMLR_C(NumericMatrix Org_x,
                         bool Time_Varying,
                         bool vimpFlag,
                         bool vimpFlag_Coef,
-                        double eps)
+                        double eps,
+                        bool setting_seed,
+                        unsigned long int seed_value)
 {                           
   
-  NumericVector unq_id = sort_unique_C_NA(id);
+  //NumericVector unq_id = unique_C_NA(id);
   int n = unq_id.size();
   
   List id_index(n);
@@ -3193,7 +3451,8 @@ List predict_BoostMLR_C(NumericMatrix Org_x,
          for(int i = 0; i < N; ++i){
            Org_x_kk[i] = Org_x(i,kk);
          }
-         Org_x_kk = randomShuffle(Org_x_kk);
+         seed_value = seed_value + add_seed;
+         Org_x_kk = randomShuffle(Org_x_kk,N,setting_seed,seed_value);
          NumericMatrix Bx_K_Temp = Bx[k];
          List Bx_Dk(Dk[k]);
          if(UseRaw[k]){
@@ -3312,8 +3571,8 @@ List predict_BoostMLR_C(NumericMatrix Org_x,
       for(int k = 0; k < K; ++k){
         List vimp_Bt_H(H);
         if(k == kk){
-          
-          IntegerVector Index_Bt_noise = int_randomShuffle(Index_Bt);
+          seed_value = seed_value + add_seed;
+          IntegerVector Index_Bt_noise = int_randomShuffle(Index_Bt,n_unq_tm,setting_seed,seed_value);
           
           NumericMatrix vimp_Bt(n_unq_tm,H);
           for(int i = 0; i < n_unq_tm; ++i){
@@ -3635,7 +3894,9 @@ List vimp_BoostMLR_C(NumericMatrix Org_x,
                      NumericVector rmse,
                      bool Time_Varying,
                      NumericVector Vec_zero,
-                     NumericMatrix mu_zero_vec)
+                     NumericMatrix mu_zero_vec,
+                     bool setting_seed,
+                     unsigned long int seed_value)
 {
   List vimp(L);
   NumericMatrix mu_vimp(N,1);
@@ -3658,11 +3919,17 @@ List vimp_BoostMLR_C(NumericMatrix Org_x,
     NumericMatrix vimp_Temp(p,H_vimp);
     
     for(int kk = 0; kk < p; ++kk){
+
       
-      IntegerVector Index_Permute(N);
-      Index_Permute = int_randomShuffle(Index_N);
-      Org_x_Noise = Org_x;
       int n_vimp_set = vimp_set.size();
+/*
+      IntegerVector Index_Permute(N);
+      seed_value = seed_value + add_seed;
+      Index_Permute = int_randomShuffle(Index_N,N,setting_seed,seed_value);
+      
+
+
+      Org_x_Noise = Org_x;
       for(int i = 0; i < N; ++i){
         if(joint){
           for(int k_vimp = 0; k_vimp < n_vimp_set; ++k_vimp){
@@ -3673,6 +3940,31 @@ List vimp_BoostMLR_C(NumericMatrix Org_x,
           Org_x_Noise(i,vimp_set[kk]) = Org_x(Index_Permute[i], vimp_set[kk]);
         }
       }
+*/
+
+       if(joint){
+         for(int k_jt = 0; k_jt < p; ++k_jt){
+             if(k_jt == vimp_set[k_jt]){
+               seed_value = seed_value + add_seed;
+               Org_x_Noise(_,k_jt) = randomShuffle(Org_x(_,k_jt),N,setting_seed,seed_value);
+             } else
+             {
+               Org_x_Noise(_,k_jt) = Org_x(_,k_jt);
+             }
+         }
+       } else
+       {
+         for(int k_sep = 0; k_sep < p; ++k_sep){
+           if(k_sep == kk){
+             seed_value = seed_value + add_seed;
+             Org_x_Noise(_,k_sep) = randomShuffle(Org_x(_,k_sep),N,setting_seed,seed_value);
+           } else
+           {
+            Org_x_Noise(_,k_sep) = Org_x(_,k_sep);
+           }
+         }
+       }
+        
       List vimp_Bxt(K);
       if(joint){
         for(int k = 0; k < K; ++k){
@@ -3874,8 +4166,8 @@ List vimp_BoostMLR_C(NumericMatrix Org_x,
           for(int k = 0; k < K; ++k){
             List vimp_Bt_H(H);
             if(is_true(any( vimp_set == k ))){
-              
-              IntegerVector Index_Bt_noise = int_randomShuffle(Index_Bt);
+              seed_value = seed_value + add_seed;
+              IntegerVector Index_Bt_noise = int_randomShuffle(Index_Bt, n_unq_tm,setting_seed,seed_value);
               
               NumericMatrix vimp_Bt(n_unq_tm,H);
               for(int i = 0; i < n_unq_tm; ++i){
@@ -3938,8 +4230,8 @@ List vimp_BoostMLR_C(NumericMatrix Org_x,
           for(int k = 0; k < K; ++k){
             List vimp_Bt_H(H);
             if(k == vimp_set[kk]){
-              
-              IntegerVector Index_Bt_noise = int_randomShuffle(Index_Bt);
+              seed_value = seed_value + add_seed;
+              IntegerVector Index_Bt_noise = int_randomShuffle(Index_Bt,n_unq_tm,setting_seed,seed_value);
               
               NumericMatrix vimp_Bt(n_unq_tm,H);
               for(int i = 0; i < n_unq_tm; ++i){

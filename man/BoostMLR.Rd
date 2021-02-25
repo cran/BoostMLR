@@ -34,6 +34,10 @@ The estimated coefficient can be a function of time (referred to as time-varying
            upper_perc = 0.75,
            NLambda = 100,
            Verbose = TRUE,
+           Trace = FALSE,
+           lambda = 0,
+           setting_seed = FALSE,
+           seed_value = 100L,
            ...)
 }
 \arguments{
@@ -93,6 +97,10 @@ Refer to Pande et al. (2020) for details.}
 Refer to Pande et al. (2020) for details.}
 \item{NLambda}{Number of replications for generating distribution of parameter estimates. Applicable when \code{Shrink} = TRUE. Refer to Pande et al. (2020) for details.}
 \item{Verbose}{Print the current stage of boosting iteration?}
+\item{Trace}{Print the current stage of execution? Useful for identifying location in case error occurs.}
+\item{lambda}{Additional penaulty; not implemented at this time.}
+\item{setting_seed}{Set \code{setting_seed} = TRUE if you intend to reproduce the result.}
+\item{seed_value}{Seed value.}
 \item{...}{Further arguments passed to or from other methods.}
 %\item{dt_Add}{Use \code{dt_Add} to specify additional time-varying covariates
 %for which time of measurements are different than time of measurements of the response. %\code{dt_Add} must be a list of length equal to number of time-varying
